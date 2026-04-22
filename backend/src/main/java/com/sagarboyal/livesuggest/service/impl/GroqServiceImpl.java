@@ -25,7 +25,7 @@ public class GroqServiceImpl implements GroqService {
     }
 
     @Override
-    public String transcribe(MultipartFile audio) {
+    public GroqTranscriptionResponse transcribe(MultipartFile audio) {
         if (audio.isEmpty()) {
             throw new IllegalArgumentException("Audio file is required");
         }
@@ -33,6 +33,8 @@ public class GroqServiceImpl implements GroqService {
         MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
         body.add("model", WHISPER_MODEL);
         body.add("file", new HttpEntity<>(toResource(audio), fileHeaders(audio)));
+        body.add("response_format", "verbose_json");
+        body.add("timestamp_granularities[]", "segment");
 
         GroqTranscriptionResponse response = groqRestClient.post()
                 .uri("/audio/transcriptions")
@@ -45,7 +47,7 @@ public class GroqServiceImpl implements GroqService {
             throw new IllegalStateException("Groq transcription response did not include text");
         }
 
-        return response.text();
+        return response;
     }
 
     private ByteArrayResource toResource(MultipartFile audio) {
