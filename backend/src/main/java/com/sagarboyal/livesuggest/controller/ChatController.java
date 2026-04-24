@@ -25,12 +25,14 @@ public class ChatController {
     }
 
     @PostMapping(value = "/chat", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ApiResponse<ChatResponse>> chat(@RequestBody ChatRequest request) {
+    public ResponseEntity<ApiResponse<ChatResponse>> chat(
+            @RequestBody ChatRequest request,
+            @org.springframework.web.bind.annotation.RequestHeader("X-Groq-Api-Key") String apiKey) {
         if (request == null) {
             throw new IllegalArgumentException("Request body is required");
         }
 
-        ChatResponse response = groqService.chat(request.transcript(), request.question(), settingsService.getSettings());
+        ChatResponse response = groqService.chat(request.transcript(), request.question(), settingsService.getSettings(), apiKey);
         return ResponseEntity.ok(ApiResponse.of(HttpStatus.OK, "Chat response generated successfully", response));
     }
 }

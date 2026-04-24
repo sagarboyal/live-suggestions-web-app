@@ -23,8 +23,10 @@ public class TranscribeController {
 	}
 
 	@PostMapping(value = "/transcribe", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<ApiResponse<GroqTranscriptionResponse>> transcribe(@RequestParam("audio") MultipartFile audio) {
-		GroqTranscriptionResponse response = groqService.transcribe(audio);
+	public ResponseEntity<ApiResponse<GroqTranscriptionResponse>> transcribe(
+			@RequestParam("audio") MultipartFile audio,
+			@org.springframework.web.bind.annotation.RequestHeader("X-Groq-Api-Key") String apiKey) {
+		GroqTranscriptionResponse response = groqService.transcribe(audio, apiKey);
 		return ResponseEntity.ok(ApiResponse.of(HttpStatus.OK, "Audio transcribed successfully", response));
 	}
 }

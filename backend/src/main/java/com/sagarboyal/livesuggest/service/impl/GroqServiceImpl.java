@@ -38,7 +38,7 @@ public class GroqServiceImpl implements GroqService {
     }
 
     @Override
-    public GroqTranscriptionResponse transcribe(MultipartFile audio) {
+    public GroqTranscriptionResponse transcribe(MultipartFile audio, String apiKey) {
         if (audio.isEmpty()) {
             throw new IllegalArgumentException("Audio file is required");
         }
@@ -51,6 +51,7 @@ public class GroqServiceImpl implements GroqService {
 
         GroqTranscriptionResponse response = groqRestClient.post()
                 .uri("/audio/transcriptions")
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + apiKey)
                 .contentType(MediaType.MULTIPART_FORM_DATA)
                 .body(body)
                 .retrieve()
@@ -64,7 +65,7 @@ public class GroqServiceImpl implements GroqService {
     }
 
     @Override
-    public SuggestionResponse getSuggestions(String transcript, AppSettings settings) {
+    public SuggestionResponse getSuggestions(String transcript, AppSettings settings, String apiKey) {
         validateText(transcript, "Transcript is required");
 
         String content = chatCompletion(List.of(
@@ -74,7 +75,7 @@ public class GroqServiceImpl implements GroqService {
 
                         %s
                         """.formatted(settings.suggestionContextWindow(), applyContextWindow(transcript, settings.suggestionContextWindow())))
-        ), SUGGESTION_MAX_TOKENS);
+        ), SUGGESTION_MAX_TOKENS, apiKey);
 
         try {
             SuggestionResponse response = jsonMapper.readValue(content, SuggestionResponse.class);
@@ -88,7 +89,7 @@ public class GroqServiceImpl implements GroqService {
     }
 
     @Override
-    public ChatResponse chat(String transcript, String question, AppSettings settings) {
+    public ChatResponse chat(String transcript, String question, AppSettings settings, String apiKey) {
         validateText(transcript, "Transcript is required");
         validateText(question, "Question is required");
 
@@ -102,16 +103,17 @@ public class GroqServiceImpl implements GroqService {
                         Question:
                         %s
                         """.formatted(applyContextWindow(transcript, settings.chatContextWindow()), question.trim()))
-        ), CHAT_MAX_TOKENS);
+        ), CHAT_MAX_TOKENS, apiKey);
 
         return new ChatResponse(content);
     }
 
-    private String chatCompletion(List<GroqChatRequest.Message> messages, int maxTokens) {
+    private String chatCompletion(List<GroqChatRequest.Message> messages, int maxTokens, String apiKey) {
         GroqChatRequest request = new GroqChatRequest(CHAT_MODEL, messages, maxTokens);
 
         GroqChatResponse response = groqRestClient.post()
                 .uri("/chat/completions")
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + apiKey)
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(request)
                 .retrieve()

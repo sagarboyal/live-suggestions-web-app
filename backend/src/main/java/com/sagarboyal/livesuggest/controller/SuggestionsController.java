@@ -25,12 +25,14 @@ public class SuggestionsController {
     }
 
     @PostMapping(value = "/suggestions", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ApiResponse<SuggestionResponse>> getSuggestions(@RequestBody SuggestionRequest request) {
+    public ResponseEntity<ApiResponse<SuggestionResponse>> getSuggestions(
+            @RequestBody SuggestionRequest request,
+            @org.springframework.web.bind.annotation.RequestHeader("X-Groq-Api-Key") String apiKey) {
         if (request == null) {
             throw new IllegalArgumentException("Request body is required");
         }
 
-        SuggestionResponse response = groqService.getSuggestions(request.transcript(), settingsService.getSettings());
+        SuggestionResponse response = groqService.getSuggestions(request.transcript(), settingsService.getSettings(), apiKey);
         return ResponseEntity.ok(ApiResponse.of(HttpStatus.OK, "Suggestions generated successfully", response));
     }
 }
