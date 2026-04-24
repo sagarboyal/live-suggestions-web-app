@@ -29,7 +29,7 @@ export const useMicRecorder = (onChunkReady: (blob: Blob, startTime: number) => 
         }
       };
 
-      recorder.start(30000); // chunk every 30 seconds
+      recorder.start(5000); // chunk every 5 seconds for faster testing
     } catch (err: any) {
       setError(err.message || 'Error accessing microphone');
       setIsRecording(false);

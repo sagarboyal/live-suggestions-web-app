@@ -31,11 +31,11 @@ const SuggestionsPanel: React.FC<SuggestionsPanelProps> = ({
           </svg>
           Reload suggestions
         </button>
-        <div className="action-hint">auto-refresh in 30s</div>
+        <div className="action-hint">auto-refresh in 5s</div>
       </div>
 
       <div className="info-card">
-        On reload (or auto every ~30s), generate <strong>3 fresh suggestions</strong> from recent transcript context. 
+        On reload (or auto every ~5s), generate <strong>3 fresh suggestions</strong> from recent transcript context. 
         New batch appears at the top; older batches push down (faded). Each is a tappable card: a <span className="txt-question">question to ask</span>, 
         a <span className="txt-talking-point">talking point</span>, a <span className="txt-fact-check">fact check</span>, 
         or a <span className="txt-clarification">clarification</span>. The preview alone should already be useful.

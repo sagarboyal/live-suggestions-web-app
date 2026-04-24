@@ -57,8 +57,8 @@ const TranscriptPanel: React.FC<TranscriptPanelProps> = ({
         </button>
         <div className="mic-text">
           {isRecording 
-            ? 'Listening... transcript updates every 30s.' 
-            : 'Click mic to start. Transcript appends every ~30s.'}
+            ? 'Listening... transcript updates every 5s.' 
+            : 'Click mic to start. Transcript appends every ~5s.'}
         </div>
       </div>
       
