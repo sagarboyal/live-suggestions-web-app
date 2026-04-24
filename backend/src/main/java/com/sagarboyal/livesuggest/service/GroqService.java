@@ -7,7 +7,7 @@ import com.sagarboyal.livesuggest.payload.response.SuggestionResponse;
 import org.springframework.web.multipart.MultipartFile;
 
 public interface GroqService {
-	GroqTranscriptionResponse transcribe(MultipartFile audio, String apiKey);
-	SuggestionResponse getSuggestions(String transcript, AppSettings settings, String apiKey);
-	ChatResponse chat(String transcript, String question, AppSettings settings, String apiKey);
+	GroqTranscriptionResponse transcribe(MultipartFile audio);
+	SuggestionResponse getSuggestions(String transcript, AppSettings settings);
+	ChatResponse chat(String transcript, String question, AppSettings settings);
 }

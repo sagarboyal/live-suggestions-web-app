@@ -17,6 +17,6 @@ public class CorsConfig implements WebMvcConfigurer {
                         HttpMethod.POST.name(),
                         HttpMethod.OPTIONS.name()
                 )
-                .allowedHeaders(HttpHeaders.CONTENT_TYPE, "X-Groq-Api-Key");
+                .allowedHeaders(HttpHeaders.CONTENT_TYPE);
     }
 }
