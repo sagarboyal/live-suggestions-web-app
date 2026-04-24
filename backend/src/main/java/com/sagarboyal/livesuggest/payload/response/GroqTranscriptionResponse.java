@@ -1,4 +1,4 @@
-package com.sagarboyal.livesuggest.payload;
+package com.sagarboyal.livesuggest.payload.response;
 
 import java.util.List;
 

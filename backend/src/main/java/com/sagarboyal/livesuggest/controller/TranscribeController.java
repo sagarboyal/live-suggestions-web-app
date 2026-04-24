@@ -1,7 +1,9 @@
 package com.sagarboyal.livesuggest.controller;
 
-import com.sagarboyal.livesuggest.payload.GroqTranscriptionResponse;
+import com.sagarboyal.livesuggest.payload.response.ApiResponse;
+import com.sagarboyal.livesuggest.payload.response.GroqTranscriptionResponse;
 import com.sagarboyal.livesuggest.service.GroqService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,7 +23,8 @@ public class TranscribeController {
 	}
 
 	@PostMapping(value = "/transcribe", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<GroqTranscriptionResponse> transcribe(@RequestParam("audio") MultipartFile audio) {
-		return ResponseEntity.ok(groqService.transcribe(audio));
+	public ResponseEntity<ApiResponse<GroqTranscriptionResponse>> transcribe(@RequestParam("audio") MultipartFile audio) {
+		GroqTranscriptionResponse response = groqService.transcribe(audio);
+		return ResponseEntity.ok(ApiResponse.of(HttpStatus.OK, "Audio transcribed successfully", response));
 	}
 }
