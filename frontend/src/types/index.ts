@@ -1,0 +1,48 @@
+export interface TranscriptSegment {
+  text: string;
+  timestamp: number;
+  displayTime: string;
+}
+
+export interface Suggestion {
+  title: string;
+  preview: string;
+  type: "question" | "talking_point" | "fact_check" | "clarification";
+}
+
+export interface SuggestionBatch {
+  id: string;
+  suggestions: Suggestion[];
+  timestamp: string;
+}
+
+export interface ChatMessage {
+  id: string;
+  role: "user" | "assistant";
+  content: string;
+  timestamp: string;
+}
+
+export interface AppSettings {
+  suggestionPrompt: string;
+  chatPrompt: string;
+  suggestionContextWindow: number;
+  chatContextWindow: number;
+}
+
+export interface TranscribeResponse {
+  text: string;
+  segments: Array<{
+    start: number;
+    end: number;
+    text: string;
+  }>;
+}
+
+export interface SuggestionResponse {
+  suggestions: Suggestion[];
+}
+
+export interface ChatResponse {
+  answer: string;
+}
