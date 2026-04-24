@@ -1,7 +1,17 @@
 :root {
-  --surface-glass: rgba(255, 255, 255, 0.6);
-  --border-glass: rgba(255, 255, 255, 0.4);
-  --shadow-color: rgba(31, 38, 135, 0.05);
+  --bg-app: #0f1115;
+  --bg-panel: #16181d;
+  --bg-card: #1c1f26;
+  --border-color: #2d3139;
+  --text-primary: #f8fafc;
+  --text-muted: #8a919e;
+  --text-dim: #475161;
+  --accent-blue: #3b82f6;
+  --accent-blue-hover: #2563eb;
+  --badge-green: #10b981;
+  --badge-orange: #f59e0b;
+  --badge-purple: #8b5cf6;
+  --badge-blue: #3b82f6;
 }
 
 body {
@@ -10,39 +20,17 @@ body {
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background: #f8fafc;
-  color: #1e293b;
-  min-height: 100vh;
-  overflow: hidden;
-}
-
-.app-background {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
+  background: var(--bg-app);
+  color: var(--text-primary);
   height: 100vh;
-  background: linear-gradient(120deg, #e0c3fc 0%, #8ec5fc 100%);
-  z-index: -2;
-}
-
-.app-background::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-image: radial-gradient(circle at 15% 50%, rgba(255,255,255,0.4) 0%, transparent 50%),
-                    radial-gradient(circle at 85% 30%, rgba(255,255,255,0.4) 0%, transparent 50%);
-  z-index: -1;
+  overflow: hidden;
 }
 
 .app {
   display: flex;
   flex-direction: column;
   height: 100vh;
-  padding: 1rem 1.5rem;
+  padding: 0;
   box-sizing: border-box;
 }
 
@@ -50,48 +38,82 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0 0 1rem 0;
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid var(--border-color);
+  background: var(--bg-app);
 }
 
 .app-header h1 {
   margin: 0;
-  font-size: 2rem;
-  font-weight: 800;
-  background: linear-gradient(to right, #1e293b, #2563eb);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  letter-spacing: -0.5px;
-  text-shadow: 0 2px 10px rgba(255,255,255,0.3);
+  font-size: 1rem;
+  font-weight: 500;
+  color: #e2e8f0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
-.app-header button {
-  background: rgba(255,255,255,0.7);
-  border: 1px solid rgba(255,255,255,0.5);
-  padding: 0.6rem 1.2rem;
-  border-radius: 12px;
-  font-weight: 600;
-  color: #475569;
+.app-header h1 span {
+  color: var(--text-muted);
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.header-subtitle {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.btn-settings {
+  background: transparent;
+  border: 1px solid var(--border-color);
+  padding: 0.4rem 0.8rem;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  color: var(--text-muted);
   cursor: pointer;
-  backdrop-filter: blur(4px);
   transition: all 0.2s;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.02);
 }
 
-.app-header button:hover {
-  background: rgba(255,255,255,0.95);
-  transform: translateY(-1px);
-  box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-  color: #0f172a;
+.btn-settings:hover {
+  background: var(--bg-card);
+  color: var(--text-primary);
 }
 
 .app-main {
   display: flex;
   flex: 1;
-  gap: 1.5rem;
-  height: calc(100vh - 80px);
+  gap: 1rem;
+  padding: 1rem;
+  height: calc(100vh - 60px);
 }
 
 .app-main > * {
   flex: 1;
   min-width: 0;
+  border-radius: 12px;
+}
+
+/* Scrollbars for dark mode */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border-color);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-dim);
 }

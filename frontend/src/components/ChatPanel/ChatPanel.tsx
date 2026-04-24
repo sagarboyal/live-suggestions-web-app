@@ -35,13 +35,19 @@ const ChatPanel: React.FC<ChatPanelProps> = ({ chatHistory, isLoading, onSend })
 
   return (
     <div className="chat-panel">
-      <div className="chat-header">
-        <h2>Chat</h2>
+      <div className="panel-header">
+        <h2>3. CHAT (DETAILED ANSWERS)</h2>
+        <div className="header-status">SESSION-ONLY</div>
+      </div>
+      
+      <div className="info-card">
+        Clicking a suggestion adds it to this chat and streams a detailed answer (separate prompt, more context). 
+        User can also type questions directly. One continuous chat per session — no login, no persistence.
       </div>
       
       <div className="chat-messages">
         {chatHistory.length === 0 ? (
-          <div className="empty-state">Click a suggestion or type a question...</div>
+          <div className="empty-state">Click a suggestion or type a question below.</div>
         ) : (
           chatHistory.map((msg) => (
             <div key={msg.id} className={`message-wrapper ${msg.role}`}>
@@ -69,7 +75,7 @@ const ChatPanel: React.FC<ChatPanelProps> = ({ chatHistory, isLoading, onSend })
         <input
           type="text"
           className="chat-input"
-          placeholder="Ask something about the meeting..."
+          placeholder="Ask anything..."
           value={inputValue}
           onChange={(e) => setInputValue(e.target.value)}
           onKeyDown={handleKeyDown}

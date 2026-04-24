@@ -4,7 +4,7 @@
   left: 0;
   width: 100vw;
   height: 100vh;
-  background: rgba(15, 23, 42, 0.4);
+  background: rgba(15, 17, 21, 0.8);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   display: flex;
@@ -20,13 +20,13 @@
 }
 
 .modal-content {
-  background: var(--surface-glass, rgba(255, 255, 255, 0.95));
-  border-radius: 24px;
+  background: var(--bg-panel);
+  border-radius: 12px;
   width: 100%;
   max-width: 450px;
   padding: 2.5rem;
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-  border: 1px solid rgba(255,255,255,0.2);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+  border: 1px solid var(--border-color);
   position: relative;
   animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
@@ -44,7 +44,7 @@
   border: none;
   font-size: 1.5rem;
   cursor: pointer;
-  color: #64748b;
+  color: var(--text-muted);
   width: 32px;
   height: 32px;
   border-radius: 50%;
@@ -55,15 +55,15 @@
 }
 
 .modal-close:hover {
-  background: #f1f5f9;
-  color: #0f172a;
+  background: var(--bg-card);
+  color: var(--text-primary);
 }
 
 .modal-title {
   margin: 0 0 1.5rem 0;
-  font-size: 1.75rem;
-  color: #0f172a;
-  font-weight: 700;
+  font-size: 1.5rem;
+  color: var(--text-primary);
+  font-weight: 600;
 }
 
 .form-group {
@@ -75,8 +75,8 @@
 
 .form-group label {
   font-size: 0.95rem;
-  color: #334155;
-  font-weight: 600;
+  color: var(--text-muted);
+  font-weight: 500;
 }
 
 .input-wrapper {
@@ -88,8 +88,10 @@
 .input-wrapper input {
   width: 100%;
   padding: 0.8rem 1rem;
-  border: 2px solid #e2e8f0;
-  border-radius: 12px;
+  border: 1px solid var(--border-color);
+  background: var(--bg-card);
+  color: var(--text-primary);
+  border-radius: 8px;
   font-size: 1rem;
   transition: border-color 0.2s;
   outline: none;
@@ -97,7 +99,7 @@
 }
 
 .input-wrapper input:focus {
-  border-color: #3b82f6;
+  border-color: var(--accent-blue);
 }
 
 .toggle-visibility {
@@ -106,7 +108,7 @@
   background: none;
   border: none;
   font-size: 0.85rem;
-  color: #3b82f6;
+  color: var(--accent-blue);
   font-weight: 600;
   cursor: pointer;
   padding: 0.2rem;
@@ -119,24 +121,22 @@
 .btn-save {
   width: 100%;
   padding: 1rem;
-  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  background: var(--accent-blue);
   color: white;
   border: none;
-  border-radius: 12px;
-  font-size: 1.1rem;
+  border-radius: 8px;
+  font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
-  transition: transform 0.1s, box-shadow 0.2s;
-  box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+  transition: transform 0.1s, background 0.2s;
 }
 
 .btn-save:hover:not(:disabled) {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
+  background: var(--accent-blue-hover);
 }
 
 .btn-save:disabled {
-  background: #cbd5e1;
-  box-shadow: none;
+  background: var(--border-color);
+  color: var(--text-dim);
   cursor: not-allowed;
 }

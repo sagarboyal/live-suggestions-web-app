@@ -15,10 +15,8 @@ interface TranscriptPanelProps {
 const TranscriptPanel: React.FC<TranscriptPanelProps> = ({
   transcript,
   isRecording,
-  isLoadingSuggestions,
   onStart,
   onStop,
-  onRefresh,
   onExport,
 }) => {
   const listRef = useRef<HTMLDivElement>(null);
@@ -31,33 +29,43 @@ const TranscriptPanel: React.FC<TranscriptPanelProps> = ({
 
   return (
     <div className="transcript-panel">
-      <div className="transcript-header">
-        <h2>
-          Transcript
-          {isRecording && (
-            <span className="badge-listening">
-              <span className="dot"></span> Listening...
-            </span>
-          )}
-        </h2>
-        <div className="controls">
+      <div className="panel-header">
+        <h2>1. MIC & TRANSCRIPT</h2>
+        <div className={`status-badge ${isRecording ? 'active' : ''}`}>
           {isRecording ? (
-            <button className="btn btn-stop" onClick={onStop}>Stop Recording</button>
+            <><span className="pulse-dot"></span> RECORDING</>
           ) : (
-            <button className="btn btn-start" onClick={onStart}>Start Recording</button>
+            'IDLE'
           )}
-          <button className="btn btn-secondary" onClick={onRefresh} disabled={isLoadingSuggestions}>
-            {isLoadingSuggestions ? 'Refreshing...' : 'Refresh'}
-          </button>
-          <button className="btn btn-secondary" onClick={onExport} disabled={transcript.length === 0}>
-            Export
+        </div>
+      </div>
+      
+      <div className="mic-area">
+        <button 
+          className={`btn-mic ${isRecording ? 'recording' : ''}`} 
+          onClick={isRecording ? onStop : onStart}
+          aria-label={isRecording ? 'Stop Recording' : 'Start Recording'}
+        >
+          <div className="inner-circle"></div>
+        </button>
+        <div className="mic-text">
+          Click mic to start. Transcript appends every ~30s.
+        </div>
+      </div>
+
+      <div className="info-card">
+        The transcript scrolls and appends new chunks every ~30 seconds while recording. 
+        Use the mic button to start/stop. Include an export button (not shown) so we can pull the full session.
+        <div style={{ marginTop: '0.75rem' }}>
+          <button className="btn-settings" onClick={onExport} disabled={transcript.length === 0}>
+            Export Session
           </button>
         </div>
       </div>
       
       <div className="transcript-list" ref={listRef}>
         {transcript.length === 0 ? (
-          <div className="empty-state">Click Start Recording to begin...</div>
+          <div className="empty-state">No transcript yet — start the mic.</div>
         ) : (
            transcript.map((segment, index) => (
             <div key={index} className="transcript-item">

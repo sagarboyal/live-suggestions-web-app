@@ -178,11 +178,13 @@ function App() {
 
   return (
     <>
-      <div className="app-background"></div>
       <div className="app">
         <header className="app-header">
-          <h1>MeetAssist</h1>
-          <button onClick={() => setShowSettings(true)}>Settings</button>
+          <h1>TwinMind <span>— Live Suggestions Web App (Reference Mockup)</span></h1>
+          <div className="header-right">
+            <span className="header-subtitle">3-column layout · Transcript · Live Suggestions · Chat</span>
+            <button className="btn-settings" onClick={() => setShowSettings(true)}>Settings</button>
+          </div>
         </header>
 
         <main className="app-main">
@@ -199,6 +201,7 @@ function App() {
             suggestionBatches={suggestionBatches}
             isLoading={isLoadingSuggestions}
             onSuggestionClick={handleSuggestionClick}
+            onRefresh={handleRefreshSuggestions}
           />
           <ChatPanel 
             chatHistory={chatHistory}
@@ -212,7 +215,7 @@ function App() {
           currentApiKey={apiKey}
           onSave={handleSaveSettings}
           onClose={() => {
-            if (apiKey) setShowSettings(false); // Only allow close if key exists
+            if (apiKey) setShowSettings(false);
           }}
         />
       </div>

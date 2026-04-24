@@ -2,105 +2,145 @@
   display: flex;
   flex-direction: column;
   height: 100%;
-  background: var(--surface-glass, rgba(255, 255, 255, 0.6));
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border-radius: 20px;
-  box-shadow: 0 8px 32px var(--shadow-color, rgba(31, 38, 135, 0.06));
-  border: 1px solid var(--border-glass, rgba(255, 255, 255, 0.5));
+  background: var(--bg-panel);
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
   overflow: hidden;
-  position: relative;
 }
 
-.suggestions-header {
-  padding: 1.5rem;
-  border-bottom: 1px solid var(--border-glass, rgba(0,0,0,0.05));
-  background: rgba(255,255,255,0.4);
+.panel-header {
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid var(--border-color);
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
-.suggestions-header h2 {
+.panel-header h2 {
   margin: 0;
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: #1e293b;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  letter-spacing: 0.5px;
 }
 
-.spinner {
-  width: 24px;
-  height: 24px;
-  border: 3px solid rgba(59, 130, 246, 0.3);
-  border-top-color: #3b82f6;
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
+.header-status {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-dim);
+  letter-spacing: 0.5px;
 }
 
-@keyframes spin {
-  to { transform: rotate(360deg); }
+.action-area {
+  padding: 1.5rem 1.5rem 0.5rem 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
+
+.btn-reload {
+  background: transparent;
+  border: 1px solid var(--border-color);
+  color: #cbd5e1;
+  padding: 0.5rem 0.8rem;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all 0.2s;
+}
+
+.btn-reload:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: var(--text-dim);
+  color: var(--text-primary);
+}
+
+.btn-reload:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.action-hint {
+  font-size: 0.75rem;
+  color: var(--text-dim);
+}
+
+.info-card {
+  margin: 1rem 1.5rem 1.5rem 1.5rem;
+  padding: 1rem 1.25rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  font-size: 0.85rem;
+  line-height: 1.6;
+  color: #cbd5e1;
+}
+
+.txt-question { color: var(--accent-blue); font-weight: 600; }
+.txt-talking-point { color: var(--badge-green); font-weight: 600; }
+.txt-fact-check { color: var(--badge-orange); font-weight: 600; }
+.txt-clarification { color: var(--badge-purple); font-weight: 600; }
 
 .suggestions-list {
   flex: 1;
   overflow-y: auto;
-  padding: 1.5rem;
+  padding: 0 1.5rem 1.5rem 1.5rem;
   display: flex;
   flex-direction: column;
-  gap: 2rem;
+  gap: 1.5rem;
 }
 
-.batch-divider {
-  display: flex;
-  align-items: center;
-  text-align: center;
-  color: #94a3b8;
-  font-size: 0.85rem;
-  font-weight: 600;
-  margin-bottom: 1rem;
-}
-
-.batch-divider::before,
-.batch-divider::after {
-  content: '';
-  flex: 1;
-  border-bottom: 1px solid rgba(0,0,0,0.06);
-}
-
-.batch-divider:not(:empty)::before {
-  margin-right: .5em;
-}
-
-.batch-divider:not(:empty)::after {
-  margin-left: .5em;
-}
-
-.suggestion-grid {
+.batch-group {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 0.75rem;
+}
+
+.batch-group.faded {
+  opacity: 0.5;
+  transition: opacity 0.3s;
+}
+
+.batch-group.faded:hover {
+  opacity: 0.8;
 }
 
 .suggestion-card {
-  background: rgba(255, 255, 255, 0.8);
-  border-radius: 14px;
-  padding: 1.25rem;
+  background: var(--bg-card);
+  border-radius: 8px;
+  padding: 1rem;
   cursor: pointer;
-  border: 1px solid rgba(226, 232, 240, 0.8);
-  box-shadow: 0 4px 15px rgba(0,0,0,0.03);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1px solid var(--border-color);
+  transition: all 0.2s ease;
   position: relative;
   overflow: hidden;
 }
 
 .suggestion-card:hover {
-  transform: translateY(-4px) scale(1.01);
-  box-shadow: 0 10px 25px rgba(0,0,0,0.08);
-  border-color: rgba(59, 130, 246, 0.4);
+  background: rgba(255, 255, 255, 0.03);
+  border-color: var(--text-dim);
 }
 
-.suggestion-card::before {
-  content: '';
+.suggestion-card h3 {
+  margin: 0 0 0.4rem 0;
+  font-size: 0.95rem;
+  color: var(--text-primary);
+  line-height: 1.4;
+  font-weight: 500;
+}
+
+.suggestion-card p {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+.type-indicator {
   position: absolute;
   top: 0;
   left: 0;
@@ -108,49 +148,28 @@
   height: 100%;
 }
 
-.type-question::before { background-color: #3b82f6; }
-.type-talking_point::before { background-color: #10b981; }
-.type-fact_check::before { background-color: #f59e0b; }
-.type-clarification::before { background-color: #8b5cf6; }
-
-.badge {
-  display: inline-block;
-  padding: 4px 10px;
-  border-radius: 20px;
-  font-size: 0.75rem;
-  text-transform: uppercase;
-  font-weight: 700;
-  letter-spacing: 0.5px;
-  margin-bottom: 0.75rem;
-}
-
-.badge.question { background: rgba(59, 130, 246, 0.1); color: #3b82f6; }
-.badge.talking_point { background: rgba(16, 185, 129, 0.1); color: #10b981; }
-.badge.fact_check { background: rgba(245, 158, 11, 0.1); color: #f59e0b; }
-.badge.clarification { background: rgba(139, 92, 246, 0.1); color: #8b5cf6; }
-
-.suggestion-card h3 {
-  margin: 0 0 0.5rem 0;
-  font-size: 1.1rem;
-  color: #1e293b;
-  line-height: 1.4;
-}
-
-.suggestion-card p {
-  margin: 0;
-  font-size: 0.95rem;
-  color: #64748b;
-  line-height: 1.5;
-}
+.type-indicator.question { background-color: var(--accent-blue); }
+.type-indicator.talking_point { background-color: var(--badge-green); }
+.type-indicator.fact_check { background-color: var(--badge-orange); }
+.type-indicator.clarification { background-color: var(--badge-purple); }
 
 .empty-state {
   display: flex;
   align-items: center;
   justify-content: center;
   height: 100%;
-  color: #94a3b8;
-  font-style: italic;
-  font-size: 1.1rem;
+  color: var(--text-dim);
+  font-size: 0.9rem;
   text-align: center;
   padding: 2rem;
+}
+
+/* Spinner Icon for Reload */
+.icon-spin {
+  animation: spin 1s linear infinite;
+  display: inline-block;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
 }
