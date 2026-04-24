@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import './App.css';
 
 import { TranscriptSegment, SuggestionBatch, ChatMessage, Suggestion } from './types';
@@ -8,7 +8,6 @@ import { transcribeAudio, getSuggestions, sendChat } from './services/api';
 import TranscriptPanel from './components/TranscriptPanel/TranscriptPanel';
 import SuggestionsPanel from './components/SuggestionsPanel/SuggestionsPanel';
 import ChatPanel from './components/ChatPanel/ChatPanel';
-import SettingsModal from './components/SettingsModal/SettingsModal';
 
 function App() {
   const [transcript, setTranscript] = useState<TranscriptSegment[]>([]);
@@ -17,24 +16,10 @@ function App() {
   
   const [isLoadingChat, setIsLoadingChat] = useState(false);
   const [isLoadingSuggestions, setIsLoadingSuggestions] = useState(false);
-  
-  const [apiKey, setApiKey] = useState("");
-  const [showSettings, setShowSettings] = useState(false);
-
-  useEffect(() => {
-    const saved = localStorage.getItem("groq_api_key");
-    if (saved) {
-      setApiKey(saved);
-    } else {
-      setShowSettings(true);
-    }
-  }, []);
 
   const handleChunkReady = async (blob: Blob, startTime: number) => {
-    if (!apiKey) return;
-    
     try {
-      const response = await transcribeAudio(blob, apiKey);
+      const response = await transcribeAudio(blob);
       
       let newSegments: TranscriptSegment[] = [];
       if (response.segments && response.segments.length > 0) {
@@ -67,16 +52,15 @@ function App() {
     }
   };
 
-  const { isRecording, startRecording, stopRecording, error } = useMicRecorder(handleChunkReady);
+  const { isRecording, startRecording, stopRecording } = useMicRecorder(handleChunkReady);
 
   const handleGetSuggestions = async (updatedTranscript: TranscriptSegment[]) => {
-    if (!apiKey) return;
     const fullText = updatedTranscript.map(s => s.text).join(" ");
     if (!fullText.trim()) return;
 
     setIsLoadingSuggestions(true);
     try {
-      const response = await getSuggestions(fullText, apiKey);
+      const response = await getSuggestions(fullText);
       if (response.suggestions && response.suggestions.length > 0) {
         const newBatch: SuggestionBatch = {
           id: Date.now().toString(),
@@ -99,8 +83,6 @@ function App() {
   const transcriptText = transcript.map(s => s.text).join(" ");
 
   const handleSuggestionClick = async (suggestion: Suggestion) => {
-    if (!apiKey) return;
-    
     const userMsg: ChatMessage = {
       id: Date.now().toString(),
       role: 'user',
@@ -111,7 +93,7 @@ function App() {
     setIsLoadingChat(true);
 
     try {
-      const response = await sendChat(transcriptText, suggestion.title, apiKey);
+      const response = await sendChat(transcriptText, suggestion.title);
       const assistantMsg: ChatMessage = {
         id: (Date.now() + 1).toString(),
         role: 'assistant',
@@ -127,8 +109,6 @@ function App() {
   };
 
   const handleChatSend = async (question: string) => {
-    if (!apiKey) return;
-    
     const userMsg: ChatMessage = {
       id: Date.now().toString(),
       role: 'user',
@@ -139,7 +119,7 @@ function App() {
     setIsLoadingChat(true);
 
     try {
-      const response = await sendChat(transcriptText, question, apiKey);
+      const response = await sendChat(transcriptText, question);
       const assistantMsg: ChatMessage = {
         id: (Date.now() + 1).toString(),
         role: 'assistant',
@@ -170,12 +150,6 @@ function App() {
     URL.revokeObjectURL(url);
   };
 
-  const handleSaveSettings = (key: string) => {
-    localStorage.setItem("groq_api_key", key);
-    setApiKey(key);
-    setShowSettings(false);
-  };
-
   return (
     <>
       <div className="app">
@@ -183,7 +157,6 @@ function App() {
           <h1>TwinMind <span>— Live Suggestions Web App (Reference Mockup)</span></h1>
           <div className="header-right">
             <span className="header-subtitle">3-column layout · Transcript · Live Suggestions · Chat</span>
-            <button className="btn-settings" onClick={() => setShowSettings(true)}>Settings</button>
           </div>
         </header>
 
@@ -209,15 +182,6 @@ function App() {
             onSend={handleChatSend}
           />
         </main>
-
-        <SettingsModal 
-          isOpen={showSettings}
-          currentApiKey={apiKey}
-          onSave={handleSaveSettings}
-          onClose={() => {
-            if (apiKey) setShowSettings(false);
-          }}
-        />
       </div>
     </>
   );
