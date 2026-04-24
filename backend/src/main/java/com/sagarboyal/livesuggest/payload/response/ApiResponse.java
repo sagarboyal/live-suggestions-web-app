@@ -1,0 +1,16 @@
+package com.sagarboyal.livesuggest.payload.response;
+
+import org.springframework.http.HttpStatus;
+
+import java.time.Instant;
+
+public record ApiResponse<T>(
+        Instant timestamp,
+        int status,
+        String message,
+        T data
+) {
+    public static <T> ApiResponse<T> of(HttpStatus status, String message, T data) {
+        return new ApiResponse<>(Instant.now(), status.value(), message, data);
+    }
+}
