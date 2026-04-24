@@ -1,7 +1,14 @@
 package com.sagarboyal.livesuggest.service.impl;
 
-import com.sagarboyal.livesuggest.payload.GroqTranscriptionResponse;
+import com.sagarboyal.livesuggest.config.AppSettings;
+import com.sagarboyal.livesuggest.payload.response.ChatResponse;
+import com.sagarboyal.livesuggest.payload.request.GroqChatRequest;
+import com.sagarboyal.livesuggest.payload.response.GroqChatResponse;
+import com.sagarboyal.livesuggest.payload.response.GroqTranscriptionResponse;
+import com.sagarboyal.livesuggest.payload.response.SuggestionResponse;
 import com.sagarboyal.livesuggest.service.GroqService;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.json.JsonMapper;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -13,15 +20,21 @@ import org.springframework.web.client.RestClient;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
 
 @Service
 public class GroqServiceImpl implements GroqService {
     private static final String WHISPER_MODEL = "whisper-large-v3";
+    private static final String CHAT_MODEL = "meta-llama/llama-4-maverick-17b-128e-instruct";
+    private static final int SUGGESTION_MAX_TOKENS = 700;
+    private static final int CHAT_MAX_TOKENS = 1200;
 
     private final RestClient groqRestClient;
+    private final JsonMapper jsonMapper;
 
-    public GroqServiceImpl(RestClient groqRestClient) {
+    public GroqServiceImpl(RestClient groqRestClient, JsonMapper jsonMapper) {
         this.groqRestClient = groqRestClient;
+        this.jsonMapper = jsonMapper;
     }
 
     @Override
@@ -48,6 +61,104 @@ public class GroqServiceImpl implements GroqService {
         }
 
         return response;
+    }
+
+    @Override
+    public SuggestionResponse getSuggestions(String transcript, AppSettings settings) {
+        validateText(transcript, "Transcript is required");
+
+        String content = chatCompletion(List.of(
+                new GroqChatRequest.Message("system", settings.suggestionPrompt()),
+                new GroqChatRequest.Message("user", """
+                        Last %d transcript segment(s):
+
+                        %s
+                        """.formatted(settings.suggestionContextWindow(), applyContextWindow(transcript, settings.suggestionContextWindow())))
+        ), SUGGESTION_MAX_TOKENS);
+
+        try {
+            SuggestionResponse response = jsonMapper.readValue(content, SuggestionResponse.class);
+            if (response.suggestions() == null || response.suggestions().size() != 3) {
+                throw new IllegalStateException("Groq suggestions response must include exactly 3 suggestions");
+            }
+            return response;
+        } catch (JacksonException exception) {
+            throw new IllegalStateException("Groq suggestions response was not valid JSON", exception);
+        }
+    }
+
+    @Override
+    public ChatResponse chat(String transcript, String question, AppSettings settings) {
+        validateText(transcript, "Transcript is required");
+        validateText(question, "Question is required");
+
+        String content = chatCompletion(List.of(
+                new GroqChatRequest.Message("system", settings.chatPrompt()),
+                new GroqChatRequest.Message("user", """
+                        Transcript:
+
+                        %s
+
+                        Question:
+                        %s
+                        """.formatted(applyContextWindow(transcript, settings.chatContextWindow()), question.trim()))
+        ), CHAT_MAX_TOKENS);
+
+        return new ChatResponse(content);
+    }
+
+    private String chatCompletion(List<GroqChatRequest.Message> messages, int maxTokens) {
+        GroqChatRequest request = new GroqChatRequest(CHAT_MODEL, messages, maxTokens);
+
+        GroqChatResponse response = groqRestClient.post()
+                .uri("/chat/completions")
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(request)
+                .retrieve()
+                .body(GroqChatResponse.class);
+
+        if (response == null || response.choices() == null || response.choices().isEmpty()
+                || response.choices().getFirst().message() == null
+                || response.choices().getFirst().message().content() == null
+                || response.choices().getFirst().message().content().isBlank()) {
+            throw new IllegalStateException("Groq chat response did not include content");
+        }
+
+        return stripJsonCodeFence(response.choices().getFirst().message().content().trim());
+    }
+
+    private String applyContextWindow(String transcript, int contextWindow) {
+        String trimmedTranscript = transcript.trim();
+        if (contextWindow <= 0) {
+            return trimmedTranscript;
+        }
+
+        List<String> segments = trimmedTranscript.lines()
+                .map(String::trim)
+                .filter(line -> !line.isBlank())
+                .toList();
+
+        if (segments.size() <= contextWindow) {
+            return trimmedTranscript;
+        }
+
+        return String.join(System.lineSeparator(), segments.subList(segments.size() - contextWindow, segments.size()));
+    }
+
+    private String stripJsonCodeFence(String content) {
+        if (!content.startsWith("```")) {
+            return content;
+        }
+
+        return content.replaceFirst("^```(?:json)?\\s*", "")
+                .replaceFirst("\\s*```$", "")
+                .trim();
+    }
+
+    private void validateText(String value, String message) {
+        if (value == null || value.isBlank()) {
+            throw new IllegalArgumentException(message);
+        }
     }
 
     private ByteArrayResource toResource(MultipartFile audio) {
