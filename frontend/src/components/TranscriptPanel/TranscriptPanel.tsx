@@ -31,12 +31,19 @@ const TranscriptPanel: React.FC<TranscriptPanelProps> = ({
     <div className="transcript-panel">
       <div className="panel-header">
         <h2>1. MIC & TRANSCRIPT</h2>
-        <div className={`status-badge ${isRecording ? 'active' : ''}`}>
-          {isRecording ? (
-            <><span className="pulse-dot"></span> RECORDING</>
-          ) : (
-            'IDLE'
+        <div className="header-actions">
+          {transcript.length > 0 && (
+            <button className="btn-icon" onClick={onExport} aria-label="Export Session">
+              Export
+            </button>
           )}
+          <div className={`status-badge ${isRecording ? 'active' : ''}`}>
+            {isRecording ? (
+              <><span className="status-dot recording"></span> RECORDING</>
+            ) : (
+              'IDLE'
+            )}
+          </div>
         </div>
       </div>
       
@@ -49,17 +56,9 @@ const TranscriptPanel: React.FC<TranscriptPanelProps> = ({
           <div className="inner-circle"></div>
         </button>
         <div className="mic-text">
-          Click mic to start. Transcript appends every ~30s.
-        </div>
-      </div>
-
-      <div className="info-card">
-        The transcript scrolls and appends new chunks every ~30 seconds while recording. 
-        Use the mic button to start/stop. Include an export button (not shown) so we can pull the full session.
-        <div style={{ marginTop: '0.75rem' }}>
-          <button className="btn-settings" onClick={onExport} disabled={transcript.length === 0}>
-            Export Session
-          </button>
+          {isRecording 
+            ? 'Listening... transcript updates every 30s.' 
+            : 'Click mic to start. Transcript appends every ~30s.'}
         </div>
       </div>
       
@@ -69,8 +68,7 @@ const TranscriptPanel: React.FC<TranscriptPanelProps> = ({
         ) : (
            transcript.map((segment, index) => (
             <div key={index} className="transcript-item">
-              <div className="timestamp">{segment.displayTime}</div>
-              <div className="text">{segment.text}</div>
+              <span className="timestamp">{segment.displayTime}</span> <span className="text">{segment.text}</span>
             </div>
           ))
         )}
