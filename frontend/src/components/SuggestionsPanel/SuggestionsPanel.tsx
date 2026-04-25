@@ -15,7 +15,6 @@ const SuggestionsPanel: React.FC<SuggestionsPanelProps> = ({
   onSuggestionClick,
   onRefresh
 }) => {
-
   const chunkIntervalMs = process.env.REACT_APP_CHUNK_INTERVAL_MS
     ? parseInt(process.env.REACT_APP_CHUNK_INTERVAL_MS, 10)
     : 5000;
@@ -47,7 +46,7 @@ const SuggestionsPanel: React.FC<SuggestionsPanelProps> = ({
           </svg>
           Reload suggestions
         </button>
-        <div className="action-hint">auto-refresh in {chunkIntervalSec}s</div>
+        <div className="action-hint">updates after new speech is transcribed</div>
       </div>
 
       <div className="suggestions-list">

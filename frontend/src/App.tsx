@@ -184,9 +184,6 @@ function App() {
       <div className="app">
         <header className="app-header">
           <h1>Live Suggestions Web App</h1>
-          <div className="header-right">
-            <span className="header-subtitle">3-column layout · Transcript · Live Suggestions · Chat</span>
-          </div>
         </header>
 
         <main className="app-main">
