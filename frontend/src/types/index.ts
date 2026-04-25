@@ -7,7 +7,7 @@ export interface TranscriptSegment {
 export interface Suggestion {
   title: string;
   preview: string;
-  type: "question" | "talking_point" | "fact_check" | "clarification";
+  type: "question" | "talking_point" | "fact_check" | "clarification" | "answer";
 }
 
 export interface SuggestionBatch {
@@ -21,6 +21,7 @@ export interface ChatMessage {
   role: "user" | "assistant";
   content: string;
   timestamp: string;
+  suggestionType?: string;
 }
 
 export interface AppSettings {

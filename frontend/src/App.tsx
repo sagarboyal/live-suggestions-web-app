@@ -83,17 +83,18 @@ function App() {
   const transcriptText = transcript.map(s => s.text).join(" ");
 
   const handleSuggestionClick = async (suggestion: Suggestion) => {
+    const suggestionPrompt = `${suggestion.title}: ${suggestion.preview}`;
     const userMsg: ChatMessage = {
       id: Date.now().toString(),
       role: 'user',
-      content: suggestion.title,
+      content: suggestionPrompt,
       timestamp: new Date().toLocaleTimeString()
     };
     setChatHistory(prev => [...prev, userMsg]);
     setIsLoadingChat(true);
 
     try {
-      const response = await sendChat(transcriptText, suggestion.title);
+      const response = await sendChat(transcriptText, suggestionPrompt);
       const assistantMsg: ChatMessage = {
         id: (Date.now() + 1).toString(),
         role: 'assistant',
@@ -154,7 +155,7 @@ function App() {
     <>
       <div className="app">
         <header className="app-header">
-          <h1>TwinMind <span>— Live Suggestions Web App (Reference Mockup)</span></h1>
+          <h1>Live Suggestions Web App</h1>
           <div className="header-right">
             <span className="header-subtitle">3-column layout · Transcript · Live Suggestions · Chat</span>
           </div>

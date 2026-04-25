@@ -33,6 +33,17 @@ const ChatPanel: React.FC<ChatPanelProps> = ({ chatHistory, isLoading, onSend })
     }
   };
 
+  const formatType = (type: string) => {
+    switch (type) {
+      case 'question': return 'QUESTION TO ASK';
+      case 'talking_point': return 'TALKING POINT';
+      case 'fact_check': return 'FACT-CHECK';
+      case 'clarification': return 'CLARIFICATION';
+      case 'answer': return 'ANSWER';
+      default: return type.replace('_', ' ').toUpperCase();
+    }
+  };
+
   return (
     <div className="chat-panel">
       <div className="panel-header">
@@ -40,19 +51,22 @@ const ChatPanel: React.FC<ChatPanelProps> = ({ chatHistory, isLoading, onSend })
         <div className="header-status">SESSION-ONLY</div>
       </div>
       
-      <div className="info-card">
-        Clicking a suggestion adds it to this chat and streams a detailed answer (separate prompt, more context). 
-        User can also type questions directly. One continuous chat per session — no login, no persistence.
-      </div>
-      
       <div className="chat-messages">
+        <div className="info-card">
+          Clicking a suggestion adds it to this chat and streams a detailed answer (separate prompt, more context). 
+          User can also type questions directly. One continuous chat per session — no login, no persistence.
+        </div>
+        
         {chatHistory.length === 0 ? (
           <div className="empty-state">Click a suggestion or type a question below.</div>
         ) : (
           chatHistory.map((msg) => (
             <div key={msg.id} className={`message-wrapper ${msg.role}`}>
+              <div className="message-header">
+                {msg.role === 'user' ? 'YOU' : 'ASSISTANT'}
+                {msg.suggestionType && ` • ${formatType(msg.suggestionType)}`}
+              </div>
               <div className="message-bubble">{msg.content}</div>
-              <div className="message-time">{msg.timestamp}</div>
             </div>
           ))
         )}

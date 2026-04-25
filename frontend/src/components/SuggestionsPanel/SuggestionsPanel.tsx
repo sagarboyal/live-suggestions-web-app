@@ -49,13 +49,14 @@ const SuggestionsPanel: React.FC<SuggestionsPanelProps> = ({
         </button>
         <div className="action-hint">auto-refresh in {chunkIntervalSec}s</div>
       </div>
-      <div className="info-card">
-        On reload (or auto every ~{chunkIntervalSec}s), generate <strong>3 fresh suggestions</strong> from recent transcript context. 
-        New batch appears at the top; older batches push down (faded). Each is a tappable card: a <span className="txt-question">question to ask</span>, 
-        a <span className="txt-talking-point">talking point</span>, an <span className="txt-answer">answer</span>, 
-        or a <span className="txt-fact-check">fact-check</span>. The preview alone should already be useful.
-      </div>
+
       <div className="suggestions-list">
+        <div className="info-card">
+          On reload (or auto every ~{chunkIntervalSec}s), generate <strong>3 fresh suggestions</strong> from recent transcript context. 
+          New batch appears at the top; older batches push down (faded). Each is a tappable card: a <span className="txt-question">question to ask</span>, 
+          a <span className="txt-talking-point">talking point</span>, an <span className="txt-answer">answer</span>, 
+          or a <span className="txt-fact-check">fact-check</span>. The preview alone should already be useful.
+        </div>
         {suggestionBatches.length === 0 ? (
           <div className="empty-state">
             Suggestions appear here once recording starts.
@@ -77,7 +78,8 @@ const SuggestionsPanel: React.FC<SuggestionsPanelProps> = ({
                   <div className={`badge ${suggestion.type}`}>
                     {formatType(suggestion.type)}
                   </div>
-                  <h3>{suggestion.title}</h3>
+                  <h3 className="suggestion-title">{suggestion.title}</h3>
+                  <p className="suggestion-preview">{suggestion.preview}</p>
                 </div>
               ))}
             </div>
