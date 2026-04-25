@@ -30,6 +30,13 @@ export interface AppSettings {
   chatContextWindow: number;
 }
 
+export interface ApiResponse<T> {
+  timestamp: string;
+  status: number;
+  message: string;
+  data: T;
+}
+
 export interface TranscribeResponse {
   text: string;
   segments: Array<{
