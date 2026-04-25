@@ -24,6 +24,11 @@ const TranscriptPanel: React.FC<TranscriptPanelProps> = ({
 }) => {
   const listRef = useRef<HTMLDivElement>(null);
 
+  const chunkIntervalMs = process.env.REACT_APP_CHUNK_INTERVAL_MS
+    ? parseInt(process.env.REACT_APP_CHUNK_INTERVAL_MS, 10)
+    : 5000;
+  const chunkIntervalSec = Math.round(chunkIntervalMs / 1000);
+
   useEffect(() => {
     if (listRef.current) {
       listRef.current.scrollTop = listRef.current.scrollHeight;
@@ -58,8 +63,8 @@ const TranscriptPanel: React.FC<TranscriptPanelProps> = ({
         />
         <div className="mic-text">
           {isRecording 
-            ? 'Listening... transcript updates every 5s.' 
-            : 'Click mic to start. Transcript appends every ~5s.'}
+            ? `Listening... transcript updates every ${chunkIntervalSec}s.` 
+            : `Click mic to start. Transcript appends every ~${chunkIntervalSec}s.`}
         </div>
       </div>
       

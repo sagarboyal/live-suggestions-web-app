@@ -31,7 +31,10 @@ export const useMicRecorder = (onChunkReady: (blob: Blob, startTime: number) => 
         }
       };
 
-      recorder.start(5000); // chunk every 5 seconds for faster testing
+      const intervalMs = process.env.REACT_APP_CHUNK_INTERVAL_MS 
+        ? parseInt(process.env.REACT_APP_CHUNK_INTERVAL_MS, 10) 
+        : 5000;
+      recorder.start(intervalMs);
     } catch (err: any) {
       setError(err.message || 'Error accessing microphone');
       setIsRecording(false);
