@@ -21,6 +21,17 @@ const SuggestionsPanel: React.FC<SuggestionsPanelProps> = ({
     : 5000;
   const chunkIntervalSec = Math.round(chunkIntervalMs / 1000);
 
+  const formatType = (type: string) => {
+    switch (type) {
+      case 'question': return 'QUESTION TO ASK';
+      case 'talking_point': return 'TALKING POINT';
+      case 'fact_check': return 'FACT-CHECK';
+      case 'clarification': return 'CLARIFICATION';
+      case 'answer': return 'ANSWER';
+      default: return type.replace('_', ' ').toUpperCase();
+    }
+  };
+
   return (
     <div className="suggestions-panel">
       <div className="panel-header">
@@ -38,14 +49,12 @@ const SuggestionsPanel: React.FC<SuggestionsPanelProps> = ({
         </button>
         <div className="action-hint">auto-refresh in {chunkIntervalSec}s</div>
       </div>
-
       <div className="info-card">
         On reload (or auto every ~{chunkIntervalSec}s), generate <strong>3 fresh suggestions</strong> from recent transcript context. 
         New batch appears at the top; older batches push down (faded). Each is a tappable card: a <span className="txt-question">question to ask</span>, 
-        a <span className="txt-talking-point">talking point</span>, a <span className="txt-fact-check">fact check</span>, 
-        or a <span className="txt-clarification">clarification</span>. The preview alone should already be useful.
+        a <span className="txt-talking-point">talking point</span>, an <span className="txt-answer">answer</span>, 
+        or a <span className="txt-fact-check">fact-check</span>. The preview alone should already be useful.
       </div>
-
       <div className="suggestions-list">
         {suggestionBatches.length === 0 ? (
           <div className="empty-state">
@@ -54,15 +63,21 @@ const SuggestionsPanel: React.FC<SuggestionsPanelProps> = ({
         ) : (
           suggestionBatches.map((batch, batchIdx) => (
             <div key={batch.id} className={`batch-group ${batchIdx > 0 ? 'faded' : ''}`}>
+              {batchIdx > 0 && (
+                <div className="batch-divider">
+                  — BATCH {suggestionBatches.length - batchIdx} • {batch.timestamp} —
+                </div>
+              )}
               {batch.suggestions.map((suggestion, idx) => (
                 <div 
                   key={idx} 
                   className="suggestion-card"
                   onClick={() => onSuggestionClick(suggestion)}
                 >
-                  <div className={`type-indicator ${suggestion.type}`}></div>
+                  <div className={`badge ${suggestion.type}`}>
+                    {formatType(suggestion.type)}
+                  </div>
                   <h3>{suggestion.title}</h3>
-                  <p>{suggestion.preview}</p>
                 </div>
               ))}
             </div>
