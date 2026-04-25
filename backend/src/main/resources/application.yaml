@@ -12,3 +12,5 @@ groq:
   api:
     key: ${GROQ_API_KEY}
     url: https://api.groq.com/openai/v1
+  chat:
+    model: openai/gpt-oss-120b

@@ -34,9 +34,18 @@ public class GroqConfig {
 	}
 
 	@ConfigurationProperties(prefix = "groq")
-	public record GroqProperties(Api api) {
+	public record GroqProperties(Api api, Chat chat) {
+
+		public String chatModel() {
+			return chat != null && chat.model() != null && !chat.model().isBlank()
+					? chat.model().trim()
+					: "openai/gpt-oss-120b";
+		}
 
 		public record Api(String key, String url) {
+		}
+
+		public record Chat(String model) {
 		}
 	}
 }

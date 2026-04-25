@@ -1,6 +1,7 @@
 package com.sagarboyal.livesuggest.service.impl;
 
 import com.sagarboyal.livesuggest.config.AppSettings;
+import com.sagarboyal.livesuggest.config.GroqConfig;
 import com.sagarboyal.livesuggest.payload.response.ChatResponse;
 import com.sagarboyal.livesuggest.payload.request.GroqChatRequest;
 import com.sagarboyal.livesuggest.payload.response.GroqChatResponse;
@@ -25,16 +26,17 @@ import java.util.List;
 @Service
 public class GroqServiceImpl implements GroqService {
     private static final String WHISPER_MODEL = "whisper-large-v3";
-    private static final String CHAT_MODEL = "meta-llama/llama-4-maverick-17b-128e-instruct";
     private static final int SUGGESTION_MAX_TOKENS = 700;
     private static final int CHAT_MAX_TOKENS = 1200;
 
     private final RestClient groqRestClient;
     private final JsonMapper jsonMapper;
+    private final String chatModel;
 
-    public GroqServiceImpl(RestClient groqRestClient, JsonMapper jsonMapper) {
+    public GroqServiceImpl(RestClient groqRestClient, JsonMapper jsonMapper, GroqConfig.GroqProperties groqProperties) {
         this.groqRestClient = groqRestClient;
         this.jsonMapper = jsonMapper;
+        this.chatModel = groqProperties.chatModel();
     }
 
     @Override
@@ -108,7 +110,7 @@ public class GroqServiceImpl implements GroqService {
     }
 
     private String chatCompletion(List<GroqChatRequest.Message> messages, int maxTokens) {
-        GroqChatRequest request = new GroqChatRequest(CHAT_MODEL, messages, maxTokens);
+        GroqChatRequest request = new GroqChatRequest(chatModel, messages, maxTokens);
 
         GroqChatResponse response = groqRestClient.post()
                 .uri("/chat/completions")
