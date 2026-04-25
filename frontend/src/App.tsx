@@ -9,6 +9,19 @@ import TranscriptPanel from './components/TranscriptPanel/TranscriptPanel';
 import SuggestionsPanel from './components/SuggestionsPanel/SuggestionsPanel';
 import ChatPanel from './components/ChatPanel/ChatPanel';
 
+const MIN_TRANSCRIPT_CHARS = 12;
+const MIN_TRANSCRIPT_WORDS = 3;
+
+const normalizeTranscriptText = (text: string) => text.replace(/\s+/g, ' ').trim();
+
+const isMeaningfulTranscript = (text: string) => {
+  const normalized = normalizeTranscriptText(text);
+  if (!normalized) return false;
+
+  const words = normalized.split(' ').filter(Boolean);
+  return normalized.length >= MIN_TRANSCRIPT_CHARS && words.length >= MIN_TRANSCRIPT_WORDS;
+};
+
 function App() {
   const [transcript, setTranscript] = useState<TranscriptSegment[]>([]);
   const [suggestionBatches, setSuggestionBatches] = useState<SuggestionBatch[]>([]);
@@ -23,26 +36,41 @@ function App() {
       
       let newSegments: TranscriptSegment[] = [];
       if (response.segments && response.segments.length > 0) {
-        newSegments = response.segments.map(seg => {
-          const timestamp = startTime + seg.start * 1000;
-          return {
-            text: seg.text,
-            timestamp,
-            displayTime: new Date(timestamp).toLocaleTimeString()
-          };
-        });
+        newSegments = response.segments
+          .map(seg => {
+            const normalizedText = normalizeTranscriptText(seg.text);
+            const timestamp = startTime + seg.start * 1000;
+            return {
+              text: normalizedText,
+              timestamp,
+              displayTime: new Date(timestamp).toLocaleTimeString()
+            };
+          })
+          .filter(seg => isMeaningfulTranscript(seg.text));
       } else if (response.text?.trim()) {
-        const timestamp = startTime;
-        newSegments = [{
-          text: response.text,
-          timestamp,
-          displayTime: new Date(timestamp).toLocaleTimeString()
-        }];
+        const normalizedText = normalizeTranscriptText(response.text);
+        if (isMeaningfulTranscript(normalizedText)) {
+          newSegments = [{
+            text: normalizedText,
+            timestamp: startTime,
+            displayTime: new Date(startTime).toLocaleTimeString()
+          }];
+        }
       }
 
       if (newSegments.length > 0) {
         setTranscript(prev => {
-          const updated = [...prev, ...newSegments];
+          const lastExistingText = prev[prev.length - 1]?.text;
+          const filteredSegments = newSegments.filter((segment, index) => {
+            const previousIncomingText = index > 0 ? newSegments[index - 1].text : lastExistingText;
+            return segment.text !== previousIncomingText;
+          });
+
+          if (filteredSegments.length === 0) {
+            return prev;
+          }
+
+          const updated = [...prev, ...filteredSegments];
           handleGetSuggestions(updated); // call immediately with updated
           return updated;
         });
