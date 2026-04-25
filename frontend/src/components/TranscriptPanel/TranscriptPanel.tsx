@@ -1,10 +1,12 @@
 import React, { useEffect, useRef } from 'react';
 import { TranscriptSegment } from '../../types';
 import './TranscriptPanel.css';
+import MicButton from './MicButton';
 
 interface TranscriptPanelProps {
   transcript: TranscriptSegment[];
   isRecording: boolean;
+  stream?: MediaStream | null;
   isLoadingSuggestions: boolean;
   onStart: () => void;
   onStop: () => void;
@@ -15,6 +17,7 @@ interface TranscriptPanelProps {
 const TranscriptPanel: React.FC<TranscriptPanelProps> = ({
   transcript,
   isRecording,
+  stream,
   onStart,
   onStop,
   onExport,
@@ -48,13 +51,11 @@ const TranscriptPanel: React.FC<TranscriptPanelProps> = ({
       </div>
       
       <div className="mic-area">
-        <button 
-          className={`btn-mic ${isRecording ? 'recording' : ''}`} 
-          onClick={isRecording ? onStop : onStart}
-          aria-label={isRecording ? 'Stop Recording' : 'Start Recording'}
-        >
-          <div className="inner-circle"></div>
-        </button>
+        <MicButton 
+          isRecording={isRecording} 
+          stream={stream || null} 
+          onToggle={isRecording ? onStop : onStart} 
+        />
         <div className="mic-text">
           {isRecording 
             ? 'Listening... transcript updates every 5s.' 

@@ -79,42 +79,6 @@
   border-bottom: 1px solid var(--border-color);
 }
 
-.btn-mic {
-  width: 60px;
-  height: 60px;
-  border-radius: 50%;
-  border: none;
-  background: var(--accent-blue);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: all 0.2s;
-  flex-shrink: 0;
-}
-
-.btn-mic:hover {
-  transform: scale(1.05);
-}
-
-.btn-mic.recording {
-  background: #ef4444;
-}
-
-.btn-mic.recording .inner-circle {
-  width: 10px;
-  height: 10px;
-  background: var(--text-primary);
-  border-radius: 50%; 
-}
-
-.btn-mic .inner-circle {
-  width: 14px;
-  height: 14px;
-  background: var(--bg-app);
-  border-radius: 50%;
-}
-
 .mic-text {
   font-size: 0.9rem;
   color: var(--text-muted);

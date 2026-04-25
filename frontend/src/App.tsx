@@ -31,7 +31,7 @@ function App() {
             displayTime: new Date(timestamp).toLocaleTimeString()
           };
         });
-      } else if (response.text.trim()) {
+      } else if (response.text?.trim()) {
         const timestamp = startTime;
         newSegments = [{
           text: response.text,
@@ -52,7 +52,7 @@ function App() {
     }
   };
 
-  const { isRecording, startRecording, stopRecording } = useMicRecorder(handleChunkReady);
+  const { isRecording, startRecording, stopRecording, stream } = useMicRecorder(handleChunkReady);
 
   const handleGetSuggestions = async (updatedTranscript: TranscriptSegment[]) => {
     const fullText = updatedTranscript.map(s => s.text).join(" ");
@@ -164,6 +164,7 @@ function App() {
           <TranscriptPanel 
             transcript={transcript}
             isRecording={isRecording}
+            stream={stream}
             isLoadingSuggestions={isLoadingSuggestions}
             onStart={startRecording}
             onStop={stopRecording}
