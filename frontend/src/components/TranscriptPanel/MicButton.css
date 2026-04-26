@@ -1,0 +1,71 @@
+.btn-mic {
+  position: relative;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  border: none;
+  background: var(--accent-blue);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  flex-shrink: 0;
+  /* Initial volume variable */
+  --mic-volume: 0; 
+}
+
+.btn-mic:hover {
+  transform: scale(1.05);
+}
+
+.btn-mic.recording {
+  background: #ef4444; /* Red color for recording */
+}
+
+/* Base inner circle icon (mic icon representation) */
+.btn-mic .inner-circle {
+  width: 14px;
+  height: 14px;
+  background: var(--bg-app, #0f172a);
+  border-radius: 50%;
+  z-index: 2;
+  transition: all 0.3s ease;
+}
+
+/* Stop square when recording */
+.btn-mic.recording .inner-circle {
+  width: 12px;
+  height: 12px;
+  background: #ffffff;
+  border-radius: 2px;
+}
+
+/* Dynamic radiating rings based on audio volume */
+.btn-mic .mic-rings {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: rgba(239, 68, 68, 0.4);
+  z-index: 1;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.btn-mic.recording .mic-rings {
+  /* Scale linearly depending on --mic-volume */
+  /* Fallback subtle pulse animation so it looks active even in silence */
+  animation: pulse-idle 2s infinite ease-in-out;
+  transform: translate(-50%, -50%) scale(calc(1 + (var(--mic-volume) * 0.8)));
+  opacity: calc(0.2 + (var(--mic-volume) * 0.6));
+  transition: transform 0.05s linear, opacity 0.05s linear;
+}
+
+@keyframes pulse-idle {
+  0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); }
+  50% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0.1); }
+  100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+}
